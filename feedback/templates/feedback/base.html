@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="{{ language }}" dir="{{ copy.direction }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ copy.site_title }}{% endblock %}</title>
+  <style>
+    :root { font-family: system-ui, sans-serif; color: #172733; background: #f3f7f8; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    header { background: #087e86; color: white; padding: 20px 24px; font-weight: 700; }
+    main { max-width: 760px; margin: 40px auto; padding: 0 20px; }
+    .card { background: white; border-radius: 16px; padding: 30px; box-shadow: 0 8px 28px #1234; }
+    h1 { margin-top: 0; font-size: 1.7rem; }
+    p { line-height: 1.7; }
+    label { display: block; font-weight: 600; margin: 20px 0 8px; }
+    select, input, textarea { width: 100%; border: 1px solid #aebfc4; border-radius: 8px; padding: 12px; font: inherit; background: white; }
+    textarea { resize: vertical; }
+    button { margin-top: 24px; border: 0; border-radius: 8px; padding: 13px 28px; background: #087e86; color: white; font: inherit; font-weight: 700; cursor: pointer; }
+    .errorlist { color: #a92f2f; margin: 6px 0; padding-right: 20px; }
+    a { color: #087e86; }
+    .header-inner { max-width: 760px; margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .language-link { color: white; font-weight: 500; }
+    .field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 20px; }
+    @media (max-width: 600px) { .field-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header><div class="header-inner"><span>{{ copy.site_title }}</span><a class="language-link" href="{% url switch_url %}">{{ copy.language_link }}</a></div></header>
+  <main><div class="card">{% block content %}{% endblock %}</div></main>
+</body>
+</html>

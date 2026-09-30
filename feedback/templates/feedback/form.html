@@ -1,0 +1,23 @@
+{% extends "feedback/base.html" %}
+{% block title %}{{ copy.page_title }}{% endblock %}
+{% block content %}
+  <h1>{{ copy.page_title }}</h1>
+  <p>{{ copy.intro }}</p>
+  {% if not form.facilities %}
+    <p>{{ copy.empty_facilities }}</p>
+  {% else %}
+  <form method="post">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="field-grid">
+      <div><label for="{{ form.facility.id_for_label }}">{{ form.facility.label }}</label>{{ form.facility }}{{ form.facility.errors }}</div>
+      <div><label for="{{ form.category.id_for_label }}">{{ form.category.label }}</label>{{ form.category }}{{ form.category.errors }}</div>
+    </div>
+    <label for="{{ form.phone.id_for_label }}">{{ form.phone.label }}</label>
+    {{ form.phone }}{{ form.phone.errors }}
+    <label for="{{ form.message.id_for_label }}">{{ form.message.label }}</label>
+    {{ form.message }}{{ form.message.errors }}
+    <button type="submit">{{ copy.submit }}</button>
+  </form>
+  {% endif %}
+{% endblock %}

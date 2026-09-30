@@ -1,0 +1,7 @@
+{% extends "feedback/base.html" %}
+{% block title %}{{ copy.success_title }}{% endblock %}
+{% block content %}
+  <h1>{{ copy.success_title }}</h1>
+  <p>{{ copy.reference }}: <strong>{{ reference }}</strong></p>
+  <p><a href="{% if language == 'ar' %}{% url 'submission_create_ar' %}{% else %}{% url 'submission_create_en' %}{% endif %}">{{ copy.another }}</a></p>
+{% endblock %}
