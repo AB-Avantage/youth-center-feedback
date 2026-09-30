@@ -1,29 +1,13 @@
+import json
+from pathlib import Path
+
+
+_arabic_data = json.loads(
+    (Path(__file__).resolve().parent / "translations" / "ar.json").read_text(encoding="utf-8")
+)
+
 TEXTS = {
-    "ar": {
-        "direction": "rtl",
-        "site_title": "شكاوى ومقترحات مراكز الشباب",
-        "page_title": "إرسال شكوى أو مقترح",
-        "intro": "اختر مركز الشباب ونوع الطلب، ثم أدخل رقم هاتفك واكتب التفاصيل.",
-        "facility": "مركز الشباب",
-        "choose_facility": "اختر مركز الشباب",
-        "category": "نوع الطلب",
-        "choose_category": "اختر نوع الطلب",
-        "report": "شكوى",
-        "recommendation": "مقترح",
-        "phone": "رقم الهاتف",
-        "message": "تفاصيل الشكوى أو المقترح",
-        "submit": "إرسال الطلب",
-        "empty_facilities": "لا توجد مراكز شباب متاحة حاليًا. يُرجى المحاولة لاحقًا.",
-        "missing_phone": "رقم الهاتف غير مرتبط بحساب عميل نشط في EZYXS.",
-        "empty_message": "يرجى كتابة تفاصيل الطلب.",
-        "invalid_phone": "أدخل رقم هاتف صحيحًا.",
-        "success_title": "تم إرسال طلبك بنجاح",
-        "reference": "رقم الطلب",
-        "another": "إرسال طلب آخر",
-        "unavailable_title": "الخدمة غير متاحة مؤقتًا",
-        "unavailable_message": "تعذر الاتصال ببيانات EZYXS حاليًا. يُرجى المحاولة لاحقًا.",
-        "language_link": "English",
-    },
+    "ar": _arabic_data["ui"],
     "en": {
         "direction": "ltr",
         "site_title": "Youth Center Complaints and Suggestions",
@@ -47,6 +31,11 @@ TEXTS = {
         "another": "Submit another request",
         "unavailable_title": "Service temporarily unavailable",
         "unavailable_message": "EZYXS data is currently unavailable. Please try again later.",
-        "language_link": "العربية",
+        "required_error": "This field is required.",
+        "invalid_choice_error": "Select a valid option.",
+        "max_length_error": "This text must not exceed %(limit_value)d characters.",
+        "language_link": "Arabic",
     },
 }
+
+FACILITY_NAMES_AR = {int(key): value for key, value in _arabic_data["facility_names"].items()}

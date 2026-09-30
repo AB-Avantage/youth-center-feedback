@@ -73,7 +73,7 @@ else:
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator", "OPTIONS": {"min_length": 8}},
 ]
-LANGUAGE_CODE = "ar"
+LANGUAGE_CODE = "en"
 TIME_ZONE = "Africa/Cairo"
 USE_I18N = True
 USE_TZ = True

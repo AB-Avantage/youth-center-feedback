@@ -28,6 +28,11 @@ class SubmissionForm(forms.Form):
         ]
         self.fields["phone"].label = copy["phone"]
         self.fields["message"].label = copy["message"]
+        for field in self.fields.values():
+            field.error_messages["required"] = copy["required_error"]
+            field.error_messages["max_length"] = copy["max_length_error"]
+        for field_name in ("facility", "category"):
+            self.fields[field_name].error_messages["invalid_choice"] = copy["invalid_choice_error"]
 
     def clean_phone(self):
         phone = normalize_phone(self.cleaned_data["phone"])

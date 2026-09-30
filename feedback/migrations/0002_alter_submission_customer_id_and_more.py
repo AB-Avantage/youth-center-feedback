@@ -14,14 +14,14 @@ class Migration(migrations.Migration):
             model_name="submission",
             name="customer_id",
             field=models.PositiveBigIntegerField(
-                blank=True, null=True, verbose_name="رقم عميل EZYXS"
+                blank=True, null=True, verbose_name="EZYXS customer ID"
             ),
         ),
         migrations.AlterField(
             model_name="submission",
             name="customer_name",
             field=models.CharField(
-                blank=True, max_length=255, verbose_name="اسم العميل"
+                blank=True, max_length=255, verbose_name="Customer name"
             ),
         ),
     ]

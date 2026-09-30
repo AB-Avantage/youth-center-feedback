@@ -33,7 +33,7 @@ def submission_create(request, language):
         facility = form.facilities[form.cleaned_data["facility"]]
         submission = Submission.objects.create(
             facility_id=facility.id,
-            facility_name=facility.name,
+            facility_name=facility.label("en"),
             category=form.cleaned_data["category"],
             message=form.cleaned_data["message"],
             customer_id=customer.id if customer else None,

@@ -13,9 +13,9 @@ class SubmissionAdmin(admin.ModelAdmin):
     list_per_page = 50
     actions = None
 
-    @admin.display(description="مطابقة العميل")
+    @admin.display(description="Customer match")
     def identity_status(self, obj):
-        return "مطابق في EZYXS" if obj.customer_id else "رقم هاتف فقط"
+        return "Matched in EZYXS" if obj.customer_id else "Phone number only"
 
     def has_add_permission(self, request):
         return False

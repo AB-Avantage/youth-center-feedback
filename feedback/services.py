@@ -4,6 +4,8 @@ from pathlib import Path
 
 from django.db import DatabaseError, connections
 
+from .texts import FACILITY_NAMES_AR
+
 
 class EZYXSUnavailable(Exception):
     """The external EZYXS database could not be read."""
@@ -16,7 +18,9 @@ class Facility:
     name_en: str = ""
 
     def label(self, language):
-        return (self.name_en or self.name) if language == "en" else self.name
+        if language == "ar":
+            return self.name or self.name_en or f"Youth Center #{self.id}"
+        return self.name_en or f"Youth Center #{self.id}"
 
 
 @dataclass(frozen=True)
@@ -28,7 +32,11 @@ class Customer:
 
 
 def normalize_phone(value):
-    translation = str.maketrans("٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹", "01234567890123456789")
+    translation = str.maketrans(
+        "\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669"
+        "\u06f0\u06f1\u06f2\u06f3\u06f4\u06f5\u06f6\u06f7\u06f8\u06f9",
+        "01234567890123456789",
+    )
     return (value or "").translate(translation).strip().replace(" ", "").replace("-", "")
 
 
@@ -56,7 +64,10 @@ def active_facilities():
     if facilities:
         return facilities
     snapshot = Path(__file__).resolve().parent / "data" / "moys_test_facilities.json"
-    return [Facility(**item) for item in json.loads(snapshot.read_text(encoding="utf-8"))]
+    return [
+        Facility(item["id"], FACILITY_NAMES_AR.get(item["id"], item["name_en"]), item["name_en"])
+        for item in json.loads(snapshot.read_text(encoding="utf-8"))
+    ]
 
 
 def find_customer_by_phone(value):

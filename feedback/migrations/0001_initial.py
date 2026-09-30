@@ -24,60 +24,60 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "facility_id",
-                    models.PositiveBigIntegerField(verbose_name="رقم مركز الشباب"),
+                    models.PositiveBigIntegerField(verbose_name="Youth center ID"),
                 ),
                 (
                     "facility_name",
-                    models.CharField(max_length=100, verbose_name="مركز الشباب"),
+                    models.CharField(max_length=100, verbose_name="Youth center"),
                 ),
                 (
                     "category",
                     models.CharField(
-                        choices=[("report", "شكوى"), ("recommendation", "مقترح")],
+                        choices=[("report", "Complaint"), ("recommendation", "Suggestion")],
                         max_length=20,
-                        verbose_name="النوع",
+                        verbose_name="Request type",
                     ),
                 ),
-                ("message", models.TextField(max_length=5000, verbose_name="النص")),
+                ("message", models.TextField(max_length=5000, verbose_name="Message")),
                 (
                     "customer_id",
-                    models.PositiveBigIntegerField(verbose_name="رقم عميل EZYXS"),
+                    models.PositiveBigIntegerField(verbose_name="EZYXS customer ID"),
                 ),
                 (
                     "customer_name",
-                    models.CharField(max_length=255, verbose_name="اسم العميل"),
+                    models.CharField(max_length=255, verbose_name="Customer name"),
                 ),
                 (
                     "customer_phone",
-                    models.CharField(max_length=15, verbose_name="رقم التليفون"),
+                    models.CharField(max_length=15, verbose_name="Phone number"),
                 ),
                 (
                     "customer_email",
                     models.EmailField(
-                        blank=True, max_length=254, verbose_name="البريد الإلكتروني"
+                        blank=True, max_length=254, verbose_name="Email address"
                     ),
                 ),
                 (
                     "status",
                     models.CharField(
                         choices=[
-                            ("new", "جديد"),
-                            ("reviewing", "قيد المراجعة"),
-                            ("closed", "مغلق"),
+                            ("new", "New"),
+                            ("reviewing", "Under review"),
+                            ("closed", "Closed"),
                         ],
                         default="new",
                         max_length=20,
-                        verbose_name="الحالة",
+                        verbose_name="Status",
                     ),
                 ),
                 (
                     "created_at",
-                    models.DateTimeField(auto_now_add=True, verbose_name="وقت الإرسال"),
+                    models.DateTimeField(auto_now_add=True, verbose_name="Submitted at"),
                 ),
             ],
             options={
-                "verbose_name": "طلب",
-                "verbose_name_plural": "الطلبات",
+                "verbose_name": "Submission",
+                "verbose_name_plural": "Submissions",
                 "ordering": ["-created_at"],
                 "indexes": [
                     models.Index(

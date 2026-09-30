@@ -5,9 +5,9 @@ from django.urls import path
 from feedback.views import submission_create, submission_success
 
 
-admin.site.site_header = "إدارة الشكاوي والمقترحات"
-admin.site.site_title = "إدارة الشكاوي والمقترحات"
-admin.site.index_title = "الطلبات"
+admin.site.site_header = "Complaints and Suggestions Administration"
+admin.site.site_title = "Complaints and Suggestions"
+admin.site.index_title = "Submissions"
 
 urlpatterns = [
     path("", lambda request: redirect("submission_create_ar")),
