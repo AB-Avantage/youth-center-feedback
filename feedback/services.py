@@ -59,15 +59,18 @@ def active_facilities():
         with connections["ezyxs"].cursor() as cursor:
             cursor.execute("SELECT id, name, name_en FROM facility_facility WHERE is_active = %s ORDER BY name", [True])
             facilities = [Facility(*row) for row in cursor.fetchall()]
-    except DatabaseError as exc:
-        raise EZYXSUnavailable("Could not read EZYXS facilities") from exc
+    except (DatabaseError, OSError):
+        facilities = []
     if facilities:
         return facilities
     snapshot = Path(__file__).resolve().parent / "data" / "moys_test_facilities.json"
-    return [
-        Facility(item["id"], FACILITY_NAMES_AR.get(item["id"], item["name_en"]), item["name_en"])
-        for item in json.loads(snapshot.read_text(encoding="utf-8"))
-    ]
+    try:
+        return [
+            Facility(item["id"], FACILITY_NAMES_AR.get(item["id"], item["name_en"]), item["name_en"])
+            for item in json.loads(snapshot.read_text(encoding="utf-8"))
+        ]
+    except (OSError, ValueError, KeyError) as exc:
+        raise EZYXSUnavailable("Could not read EZYXS facilities or the local snapshot") from exc
 
 
 def find_customer_by_phone(value):

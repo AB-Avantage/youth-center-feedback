@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="Football">
+  <rect width="48" height="48" rx="13" fill="#18b7ad"/>
+  <circle cx="24" cy="24" r="15.5" fill="#f7ffff" stroke="#0e2d44" stroke-width="1.7"/>
+  <path d="m24 15.5 7.4 5.3-2.8 8.6h-9.2l-2.8-8.6z" fill="#0e2d44"/>
+  <path d="M24 15.5V8.6m7.4 12.2 6.4-2.2m-9.2 10.8 3.8 5.8m-13-5.8-3.8 5.8m1-14.4-6.4-2.2" fill="none" stroke="#0e2d44" stroke-width="1.6" stroke-linecap="round"/>
+</svg>

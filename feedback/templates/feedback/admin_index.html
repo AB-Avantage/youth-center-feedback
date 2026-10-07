@@ -1,0 +1,9 @@
+{% extends "admin/index.html" %}
+{% block content %}
+<p>
+  <a href="{% url 'admin:auth_user_changelist' %}">{{ portal_copy.all_users }}</a> &middot;
+  <a href="{% url 'admin:feedback_staffmember_changelist' %}">{{ portal_copy.team }}</a> &middot;
+  <a href="{% url 'admin:feedback_staffmember_add' %}">{{ portal_copy.create_staff }}</a>
+</p>
+{{ block.super }}
+{% endblock %}

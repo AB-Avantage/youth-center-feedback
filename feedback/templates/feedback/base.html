@@ -1,32 +1,44 @@
+{% load static %}
 <!doctype html>
 <html lang="{{ language }}" dir="{{ copy.direction }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102b42">
   <title>{% block title %}{{ copy.site_title }}{% endblock %}</title>
-  <style>
-    :root { font-family: system-ui, sans-serif; color: #172733; background: #f3f7f8; }
-    * { box-sizing: border-box; }
-    body { margin: 0; }
-    header { background: #087e86; color: white; padding: 20px 24px; font-weight: 700; }
-    main { max-width: 760px; margin: 40px auto; padding: 0 20px; }
-    .card { background: white; border-radius: 16px; padding: 30px; box-shadow: 0 8px 28px #1234; }
-    h1 { margin-top: 0; font-size: 1.7rem; }
-    p { line-height: 1.7; }
-    label { display: block; font-weight: 600; margin: 20px 0 8px; }
-    select, input, textarea { width: 100%; border: 1px solid #aebfc4; border-radius: 8px; padding: 12px; font: inherit; background: white; }
-    textarea { resize: vertical; }
-    button { margin-top: 24px; border: 0; border-radius: 8px; padding: 13px 28px; background: #087e86; color: white; font: inherit; font-weight: 700; cursor: pointer; }
-    .errorlist { color: #a92f2f; margin: 6px 0; padding-right: 20px; }
-    a { color: #087e86; }
-    .header-inner { max-width: 760px; margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-    .language-link { color: white; font-weight: 500; }
-    .field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 20px; }
-    @media (max-width: 600px) { .field-grid { grid-template-columns: 1fr; } }
-  </style>
+  <link rel="icon" type="image/svg+xml" href="{% static 'feedback/football.svg' %}">
+  <link rel="stylesheet" href="{% static 'feedback/app.css' %}">
 </head>
 <body>
-  <header><div class="header-inner"><span>{{ copy.site_title }}</span><a class="language-link" href="{% url switch_url %}">{{ copy.language_link }}</a></div></header>
-  <main><div class="card">{% block content %}{% endblock %}</div></main>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="{% if portal %}{% url 'staff_dashboard' %}{% else %}{% if language == 'ar' %}{% url 'submission_create_ar' %}{% else %}{% url 'submission_create_en' %}{% endif %}{% endif %}"><img class="brand-icon" src="{% static 'feedback/football.svg' %}" alt="" aria-hidden="true"><span>{{ copy.site_title }}</span></a>
+      <div class="header-actions">
+        {% if portal %}
+          <a class="language-link" href="{{ request.path }}{{ switch_query }}">{{ copy.language_link }}</a>
+          {% if request.user.is_authenticated %}<form method="post" action="{% url 'staff_logout' %}">{% csrf_token %}<button class="text-button" type="submit">{{ copy.sign_out }}</button></form>{% endif %}
+        {% else %}
+          <a class="language-link" href="{% url switch_url %}">{{ copy.language_link }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+  <main class="shell">
+    {% if portal and request.user.is_authenticated %}
+      <nav class="tabs" aria-label="{{ copy.staff_portal }}">
+        <a href="{% url 'staff_dashboard' %}">{{ copy.dashboard }}</a>
+        <a href="{% url 'staff_active' %}">{{ copy.active_complaints }}</a>
+        <a href="{% url 'staff_archived' %}">{{ copy.archived_complaints }}</a>
+        <a href="{% url 'staff_team' %}">{{ copy.team }}</a>
+      </nav>
+    {% elif not portal %}
+      <nav class="tabs" aria-label="{{ copy.site_title }}">
+        <a class="{% if active_tab == 'create' %}selected{% endif %}" href="{% if language == 'ar' %}{% url 'submission_create_ar' %}{% else %}{% url 'submission_create_en' %}{% endif %}">{{ copy.create_tab }}</a>
+        <a class="{% if active_tab == 'track' %}selected{% endif %}" href="{% if language == 'ar' %}{% url 'submission_track_ar' %}{% else %}{% url 'submission_track_en' %}{% endif %}">{{ copy.track_tab }}</a>
+      </nav>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+  <script src="{% static 'feedback/app.js' %}" defer></script>
 </body>
 </html>

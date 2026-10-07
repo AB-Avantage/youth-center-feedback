@@ -20,6 +20,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -37,6 +38,7 @@ TEMPLATES = [{
         "django.template.context_processors.request",
         "django.contrib.auth.context_processors.auth",
         "django.contrib.messages.context_processors.messages",
+        "feedback.context_processors.portal_copy",
     ]},
 }]
 WSGI_APPLICATION = "config.wsgi.application"
@@ -74,11 +76,24 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator", "OPTIONS": {"min_length": 8}},
 ]
 LANGUAGE_CODE = "en"
+LANGUAGES = [("en", "English"), ("ar", "Arabic")]
 TIME_ZONE = "Africa/Cairo"
 USE_I18N = True
 USE_TZ = True
 STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+LOGIN_URL = "/staff/login/"
+
+# Console delivery is for local development. Configure SMTP for real OTP emails.
+EMAIL_BACKEND = os.environ.get("FEEDBACK_EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+EMAIL_HOST = os.environ.get("FEEDBACK_EMAIL_HOST", "")
+EMAIL_PORT = int(os.environ.get("FEEDBACK_EMAIL_PORT", "587"))
+EMAIL_HOST_USER = os.environ.get("FEEDBACK_EMAIL_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("FEEDBACK_EMAIL_PASSWORD", "")
+EMAIL_USE_TLS = os.environ.get("FEEDBACK_EMAIL_USE_TLS", "true").lower() == "true"
+DEFAULT_FROM_EMAIL = os.environ.get("FEEDBACK_FROM_EMAIL", "no-reply@example.com")
 
 if not DEBUG and SECRET_KEY == "local-development-only-change-before-deployment":
     raise RuntimeError("Set FEEDBACK_SECRET_KEY before deployment")
+if not DEBUG and EMAIL_BACKEND == "django.core.mail.backends.console.EmailBackend":
+    raise RuntimeError("Configure FEEDBACK_EMAIL_BACKEND for real password reset emails")

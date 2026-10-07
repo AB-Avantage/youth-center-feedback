@@ -1,23 +1,29 @@
 {% extends "feedback/base.html" %}
 {% block title %}{{ copy.page_title }}{% endblock %}
 {% block content %}
-  <h1>{{ copy.page_title }}</h1>
-  <p>{{ copy.intro }}</p>
-  {% if not form.facilities %}
-    <p>{{ copy.empty_facilities }}</p>
-  {% else %}
-  <form method="post">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
-    <div class="field-grid">
-      <div><label for="{{ form.facility.id_for_label }}">{{ form.facility.label }}</label>{{ form.facility }}{{ form.facility.errors }}</div>
-      <div><label for="{{ form.category.id_for_label }}">{{ form.category.label }}</label>{{ form.category }}{{ form.category.errors }}</div>
+<section class="hero"><span class="eyebrow">{{ copy.create_tab }}</span><h1>{{ copy.page_title }}</h1><p>{{ copy.intro }}</p></section>
+<section class="card form-card">
+{% if not form.facilities %}<p>{{ copy.empty_facilities }}</p>{% else %}
+<form method="post">{% csrf_token %}{{ form.non_field_errors }}
+  <div class="field-grid">
+    <div class="field" data-facility-combobox data-no-results="{{ copy.no_facility_match }}" data-invalid-choice="{{ copy.invalid_choice_error }}">
+      <label for="{{ form.facility.id_for_label }}">{{ form.facility.label }}</label>
+      <div class="combo-control" hidden>
+        <input id="facility-search" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="facility-options" placeholder="{{ copy.choose_facility }}" autocomplete="off">
+        <button class="combo-toggle" type="button" aria-label="{{ copy.show_centers }}" aria-controls="facility-options" aria-expanded="false">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7 5 5 5-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
+        </button>
+        <div id="facility-options" class="combo-options" role="listbox" hidden></div>
+      </div>
+      {{ form.facility }}{{ form.facility.errors }}
     </div>
-    <label for="{{ form.phone.id_for_label }}">{{ form.phone.label }}</label>
-    {{ form.phone }}{{ form.phone.errors }}
-    <label for="{{ form.message.id_for_label }}">{{ form.message.label }}</label>
-    {{ form.message }}{{ form.message.errors }}
-    <button type="submit">{{ copy.submit }}</button>
-  </form>
-  {% endif %}
+    <div class="field"><label for="{{ form.category.id_for_label }}">{{ form.category.label }}</label>{{ form.category }}{{ form.category.errors }}</div>
+    <div class="field"><label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>{{ form.name }}{{ form.name.errors }}</div>
+    <div class="field"><label for="{{ form.phone.id_for_label }}">{{ form.phone.label }}</label>{{ form.phone }}{{ form.phone.errors }}</div>
+  </div>
+  <div class="field"><label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>{{ form.email }}{{ form.email.errors }}</div>
+  <div class="field"><label for="{{ form.message.id_for_label }}">{{ form.message.label }}</label>{{ form.message }}{{ form.message.errors }}</div>
+  <button class="button" type="submit">{{ copy.submit }}</button>
+</form>{% endif %}
+</section>
 {% endblock %}

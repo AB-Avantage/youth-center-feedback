@@ -1,0 +1,3 @@
+{% extends "feedback/base.html" %}
+{% block title %}{{ copy.forgot_password }}{% endblock %}
+{% block content %}<section class="hero"><span class="eyebrow">{{ copy.staff_portal }}</span><h1>{{ copy.forgot_password }}</h1><p>{{ copy.forgot_intro }}</p></section><section class="card form-card"><form method="post">{% csrf_token %}{{ form.non_field_errors }}<div class="field"><label for="{{ form.email.id_for_label }}">{{ copy.staff_email }}</label>{{ form.email }}{{ form.email.errors }}</div><div class="actions"><button class="button" type="submit">{{ copy.send_otp }}</button><a href="{% url 'staff_login' %}">{{ copy.back }}</a></div></form></section>{% endblock %}
