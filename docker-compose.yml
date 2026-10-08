@@ -1,0 +1,14 @@
+services:
+  web:
+    build: .
+    image: ghcr.io/ab-avantage/youth-center-feedback:dev
+    ports:
+      - "127.0.0.1:8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - feedback_data:/app/data
+    restart: unless-stopped
+
+volumes:
+  feedback_data:

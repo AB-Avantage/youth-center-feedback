@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 feedback.sqlite3
+data/
 .env
 .pytest_cache/
 staticfiles/
