@@ -13,7 +13,7 @@ An independent Django application for youth center complaints and suggestions. C
 
 - The application reads active youth centers and matching customer profiles from the EZYXS database through a read-only connection. Local development uses `../ezyxs-backend/db.sqlite3` by default. Set `EZYXS_SQLITE_PATH` if it is elsewhere.
 - If EZYXS has no centers or is unavailable, the application uses the seven centers captured from the `moys-test` facility API on September 30, 2026. This is a static snapshot and can become outdated. English names are in `feedback/data/moys_test_facilities.json`; Arabic names are in `feedback/translations/ar.json`.
-- Submissions, staff accounts, tracking codes, conversation events, API tokens, and password-reset records are saved in this project's `feedback.sqlite3`, not in EZYXS. The local SQLite database is excluded from Git, so cloning the repository does not copy real data or local accounts.
+- Submissions, staff accounts, tracking codes, conversation events, API tokens, and password-reset records are saved in this project's `data/feedback.sqlite3`, not in EZYXS. The local SQLite database is excluded from Git, so cloning the repository does not copy real data or local accounts.
 - A phone number is optional and does not prove identity. If a provided phone uniquely matches an active EZYXS customer, the request stores that customer's ID and available profile details.
 
 ## Local setup
@@ -23,12 +23,13 @@ Run these commands in PowerShell from the project folder:
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+New-Item -ItemType Directory -Force data | Out-Null
 .\.venv\Scripts\python.exe manage.py migrate
 .\.venv\Scripts\python.exe manage.py createsuperuser
 .\.venv\Scripts\python.exe manage.py runserver 127.0.0.1:8010
 ```
 
-`migrate` creates the local tables and gives existing submissions tracking codes. Back up `feedback.sqlite3` before migrating a database with real data. `createsuperuser` creates the main admin account. Sign in at `/admin/`, then use **Create staff account** to add staff. **All users** lists local Django accounts; **Staff members** lists staff profiles. Anonymous customers and remote EZYXS customers are not user accounts in this database; their submitted contact details appear under **Submissions**.
+The database lives in `data\feedback.sqlite3`, and SQLite does not create a missing folder, so the `data` folder must exist before `migrate`. `migrate` creates the local tables and gives existing submissions tracking codes. Back up `data\feedback.sqlite3` before migrating a database with real data. `createsuperuser` creates the main admin account. Sign in at `/admin/`, then use **Create staff account** to add staff. **All users** lists local Django accounts; **Staff members** lists staff profiles. Anonymous customers and remote EZYXS customers are not user accounts in this database; their submitted contact details appear under **Submissions**.
 
 In **All users**, the **Is staff (staff portal)** checkbox on the add and edit forms controls staff portal access. A checked account needs an email, name, and phone number; it receives a StaffMember profile and can sign in at `/staff/login/`. Unchecking removes staff portal access. Django's built-in `is_staff` flag is separate and controls Django admin eligibility; portal staff accounts have that flag turned off.
 
