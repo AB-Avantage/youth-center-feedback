@@ -1,0 +1,71 @@
+name: Set admin and staff logins – Dev
+
+# Inputs are Django password hashes, hex-encoded so no shell can mangle the
+# "$" separators. The plain passwords never reach GitHub or the server.
+on:
+  workflow_dispatch:
+    inputs:
+      admin_hash_hex:
+        description: Hex-encoded password hash for the "admin" superadmin
+        required: true
+      staff_hash_hex:
+        description: Hex-encoded password hash for staff@example.com
+        required: true
+
+env:
+  SITE_URL: http://185.192.97.253
+
+jobs:
+  set-logins:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create or update the admin and staff accounts
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: ADMIN_HASH_HEX,STAFF_HASH_HEX
+          script: |
+            set -e
+            cd /home/projects/youth-center-feedback
+            docker compose exec -T -e ADMIN_HASH_HEX -e STAFF_HASH_HEX web python manage.py shell <<'PY'
+            import os, secrets
+            from django.contrib.auth.models import User
+            from feedback.models import StaffMember
+            from feedback.operations import create_staff
+
+            admin, created = User.objects.get_or_create(username="admin", defaults={"email": "admin@example.com"})
+            admin.is_active = admin.is_staff = admin.is_superuser = True
+            admin.password = bytes.fromhex(os.environ["ADMIN_HASH_HEX"]).decode()
+            admin.save()
+            print("Created" if created else "Updated", "the admin account")
+
+            staff = StaffMember.objects.filter(email="staff@example.com").first()
+            created = staff is None
+            if created:
+                staff = create_staff({"email": "staff@example.com", "full_name": "Demo Staff", "phone": "0500000001", "password": secrets.token_urlsafe()}, admin)
+            staff.user.is_active = True
+            staff.user.password = bytes.fromhex(os.environ["STAFF_HASH_HEX"]).decode()
+            staff.user.save()
+            print("Created" if created else "Updated", "the staff account")
+            PY
+        env:
+          ADMIN_HASH_HEX: ${{ inputs.admin_hash_hex }}
+          STAFF_HASH_HEX: ${{ inputs.staff_hash_hex }}
+
+      # A wrong password must come back as a 200 form error. A 403 means CSRF
+      # rejects every login, so a correct password would fail too.
+      - name: Check the login pages accept form posts
+        run: |
+          for page in /admin/login/ /staff/login/; do
+            rm -f jar.txt
+            token=$(curl -sS -c jar.txt "$SITE_URL$page" | grep -o 'name="csrfmiddlewaretoken" value="[^"]*"' | sed 's/.*value="//;s/"$//')
+            field=$([ "$page" = /admin/login/ ] && echo username || echo identity)
+            status=$(curl -sS -o /dev/null -w '%{http_code}' -b jar.txt -e "$SITE_URL$page" \
+              --data-urlencode "csrfmiddlewaretoken=$token" --data-urlencode "$field=nobody@example.com" \
+              --data-urlencode "password=wrong-password" "$SITE_URL$page")
+            echo "$page wrong-password POST -> $status"
+            [ "$status" = 200 ]
+          done
